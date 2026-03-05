@@ -9,12 +9,15 @@ inputs:
     required: false
     default: 'knoker123/my-judge:v1'
 
+
 runs:
   using: 'composite'
   steps:
     - name: Run judge
       shell: bash
-      run: ${{ github.action_path }}/run.sh
+      run: |
+        chmod +x ${{ github.action_path }}/run.sh
+        ${{ github.action_path }}/run.sh
       env:
         IMAGE_SOLUTION: ${{ inputs.image }}
         IMAGE_JUDGE: ${{ inputs.judge_image }}
