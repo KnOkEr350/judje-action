@@ -23,10 +23,11 @@ services:
       db:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8080/ping || exit 1"]
-      interval: 2s
-      timeout: 5s
-      retries: 20
+      test: ["CMD-SHELL", "curl -f -m 3 http://localhost:8080/ping || exit 1"]
+      interval: 3s
+      timeout: 10s
+      retries: 30
+      start_period: 15s
 
   judge:
     image: ${IMAGE_JUDGE}
