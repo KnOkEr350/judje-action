@@ -27,7 +27,8 @@ services:
     image: ${IMAGE_SOLUTION}
     environment:
       DATABASE_URL: postgresql://appuser:apppassword@db:5432/appdb
-      REDIS_URL: redis://redis:6379
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
     depends_on:
       db:
         condition: service_healthy
