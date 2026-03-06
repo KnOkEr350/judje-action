@@ -21,3 +21,14 @@ runs:
       env:
         IMAGE_SOLUTION: ${{ inputs.image }}
         IMAGE_JUDGE: ${{ inputs.judge_image }}
+
+    - name: Show logs on failure
+      if: failure()
+      shell: bash
+      run: |
+        echo "===== student-app logs ====="
+        docker compose -f /tmp/judge-compose.yml logs student-app || true
+        echo "===== db logs ====="
+        docker compose -f /tmp/judge-compose.yml logs db || true
+        echo "===== redis logs ====="
+        docker compose -f /tmp/judge-compose.yml logs redis || true
