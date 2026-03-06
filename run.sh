@@ -50,6 +50,18 @@ services:
         condition: service_healthy
 EOF
 
+set +e
 docker compose -f /tmp/judge-compose.yml up \
   --abort-on-container-exit \
   --exit-code-from judge
+EXIT_CODE=$?
+set -e
+
+echo "===== student-app logs ====="
+docker compose -f /tmp/judge-compose.yml logs student-app
+echo "===== db logs ====="
+docker compose -f /tmp/judge-compose.yml logs db
+echo "===== redis logs ====="
+docker compose -f /tmp/judge-compose.yml logs redis
+
+exit $EXIT_CODE
