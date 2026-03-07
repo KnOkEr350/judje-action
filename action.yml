@@ -1,4 +1,5 @@
 name: 'Judge Action'
+description: 'Runs judge tests against a student Docker image'
 
 inputs:
   image:
@@ -21,4 +22,9 @@ runs:
         docker compose -f ${{ github.action_path }}/docker-compose.yml up \
           --abort-on-container-exit \
           --exit-code-from judge
-        docker compose -f ${{ github.action_path }}/docker-compose.yml down
+
+    - name: Cleanup containers
+      if: always()
+      shell: bash
+      run: |
+        docker compose -f ${{ github.action_path }}/docker-compose.yml down -v --remove-orphans
