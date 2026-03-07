@@ -34,17 +34,11 @@ services:
       redis:
         condition: service_healthy
     healthcheck:
-      test: ["CMD-SHELL", "wget -q --spider http://localhost:8080/ping || exit 1"]
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8080/ping')\""]
       interval: 3s
       timeout: 5s
       retries: 20
       start_period: 10s
-    # Лимиты
-    deploy:
-      resources:
-        limits:
-          memory: 512M
-          cpus: '1.0'
 
   judge:
     image: ${IMAGE_JUDGE}
