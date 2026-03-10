@@ -50,6 +50,7 @@ services:
     image: ${IMAGE_JUDGE}
     environment:
       BASE_URL: http://student-app:8080
+      ASSIGNMENT_TYPE: ${ASSIGNMENT_TYPE}
     depends_on:
       student-app:
         condition: service_healthy

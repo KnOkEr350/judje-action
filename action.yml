@@ -9,18 +9,22 @@ inputs:
     description: 'Judge Docker image'
     required: false
     default: 'knoker123/my-judge:v1'
+  assignment_type:
+    description: 'Тип задания: basic или advanced'
+    required: true
+    default: 'basic'
 
 runs:
   using: 'composite'
   steps:
-
-    - name: Set global environment variables
+    - name: Set environment variables
       shell: bash
       run: |
         echo "IMAGE_SOLUTION=${{ inputs.image }}" >> $GITHUB_ENV
         echo "IMAGE_JUDGE=${{ inputs.judge_image }}" >> $GITHUB_ENV
+        echo "ASSIGNMENT_TYPE=${{ inputs.assignment_type }}" >> $GITHUB_ENV
 
-    - name: Run judge
+    - name: Execute Judge Tests
       shell: bash
       run: |
         docker compose -f ${{ github.action_path }}/docker-compose.yml up \
