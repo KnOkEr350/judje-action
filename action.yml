@@ -22,7 +22,6 @@ runs:
       run: |
         echo "IMAGE_SOLUTION=${{ inputs.image }}" >> $GITHUB_ENV
         echo "IMAGE_JUDGE=${{ inputs.judge_image }}" >> $GITHUB_ENV
-        # Теперь эта переменная гарантированно попадет в окружение
         echo "ASSIGNMENT_TYPE=${{ inputs.assignment_type }}" >> $GITHUB_ENV
 
     - name: Execute Judge Tests
