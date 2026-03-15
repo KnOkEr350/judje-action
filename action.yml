@@ -27,12 +27,22 @@ runs:
     - name: Execute Judge Tests
       shell: bash
       run: |
-        docker compose -f ${{ github.action_path }}/docker-compose.yml up \
+        # Добавляем --project-directory $GITHUB_WORKSPACE, чтобы все пути 
+        # считались от корня студенческого репозитория
+        docker compose --project-directory $GITHUB_WORKSPACE -f ${{ github.action_path }}/docker-compose.yml up \
           --abort-on-container-exit \
           --exit-code-from judge
+
+    - name: Extract results
+      if: always()
+      shell: bash
+      run: |
+        echo "=== Достаем файл results.json из контейнера ==="
+        # Копируем файл из контейнера 'judge' в рабочую область студента
+        docker compose --project-directory $GITHUB_WORKSPACE -f ${{ github.action_path }}/docker-compose.yml cp judge:/app/results.json $GITHUB_WORKSPACE/results.json || echo "Файл results.json не найден в контейнере!"
 
     - name: Cleanup containers
       if: always()
       shell: bash
       run: |
-        docker compose -f ${{ github.action_path }}/docker-compose.yml down -v --remove-orphans
+        docker compose --project-directory $GITHUB_WORKSPACE -f ${{ github.action_path }}/docker-compose.yml down -v --remove-orphans
