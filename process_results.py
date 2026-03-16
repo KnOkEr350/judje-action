@@ -1,5 +1,6 @@
 import json
 import os
+import base64
 
 
 def main():
@@ -19,24 +20,36 @@ def main():
 
     test_status = "pass" if score > 0 else "fail"
 
-    autograding_data = {
+    config = {"tests": [{"name": "test1", "run": "exit 0", "points": max_score}]}
+    os.makedirs('.github/classroom', exist_ok=True)
+    with open('.github/classroom/autograding.json', 'w') as f:
+        json.dump(config, f)
+
+    res = {
         "version": 1,
         "status": test_status,
         "max_score": max_score,
-        "tests": [
-            {
-                "name": f"Final Evaluation ({assignment_type.upper()})",
-                "status": test_status,
-                "score": score,
-                "max_score": max_score,
-                "message": f"Score: {score}/{max_score}"
-            }
-        ]
+        "tests": [{
+            "name": "test1",
+            "status": test_status,
+            "score": score,
+            "max_score": max_score,
+            "message": f"Final score: {score}/{max_score}",
+            "test_code": f"Docker Compose Judge ({assignment_type.upper()})",
+            "filename": "runner.py",
+            "line_no": 1,
+            "execution_time": "1"
+        }]
     }
 
-    os.makedirs('.github/classroom', exist_ok=True)
-    with open('.github/classroom/autograding.json', 'w') as f:
-        json.dump(autograding_data, f, indent=4)
+    encoded = base64.b64encode(json.dumps(res).encode('utf-8')).decode('utf-8')
+    github_env = os.environ.get('GITHUB_ENV')
+
+    if github_env:
+        with open(github_env, 'a') as f:
+            f.write(f"TEST1_RESULTS={encoded}\n")
+    else:
+        print("Warning: GITHUB_ENV not found.")
 
 
 if __name__ == "__main__":
