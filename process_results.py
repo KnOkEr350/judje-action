@@ -18,29 +18,40 @@ def main():
         except Exception as e:
             print(f"Error reading results: {e}")
 
-    test_status = "pass" if score > 0 else "fail"
+    tests_array = []
+
+    if score > 0:
+        tests_array.append({
+            "name": "Earned Points",
+            "status": "pass",
+            "score": score,
+            "max_score": score,
+            "message": f"Successfully earned {score} points."
+        })
+
+    lost_points = max_score - score
+    if lost_points > 0:
+        tests_array.append({
+            "name": "Lost Points",
+            "status": "fail",
+            "score": 0,
+            "max_score": lost_points,
+            "message": f"Missed {lost_points} points."
+        })
+
+    overall_status = "pass" if score > 0 else "fail"
+
+    res = {
+        "version": 1,
+        "status": overall_status,
+        "max_score": max_score,
+        "tests": tests_array
+    }
 
     config = {"tests": [{"name": "test1", "run": "exit 0", "points": max_score}]}
     os.makedirs('.github/classroom', exist_ok=True)
     with open('.github/classroom/autograding.json', 'w') as f:
         json.dump(config, f)
-
-    res = {
-        "version": 1,
-        "status": test_status,
-        "max_score": max_score,
-        "tests": [{
-            "name": "test1",
-            "status": test_status,
-            "score": score,
-            "max_score": max_score,
-            "message": f"Final score: {score}/{max_score}",
-            "test_code": f"Docker Compose Judge ({assignment_type.upper()})",
-            "filename": "runner.py",
-            "line_no": 1,
-            "execution_time": "1"
-        }]
-    }
 
     encoded = base64.b64encode(json.dumps(res).encode('utf-8')).decode('utf-8')
     github_env = os.environ.get('GITHUB_ENV')
@@ -48,8 +59,6 @@ def main():
     if github_env:
         with open(github_env, 'a') as f:
             f.write(f"TEST1_RESULTS={encoded}\n")
-    else:
-        print("Warning: GITHUB_ENV not found.")
 
 
 if __name__ == "__main__":
