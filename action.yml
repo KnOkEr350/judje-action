@@ -37,7 +37,9 @@ runs:
       run: |
         docker compose --project-directory $GITHUB_WORKSPACE -f ${{ github.action_path }}/docker-compose.yml cp judge:/app/results.json $GITHUB_WORKSPACE/results.json
         docker compose --project-directory $GITHUB_WORKSPACE -f ${{ github.action_path }}/docker-compose.yml cp judge:/app/report.json $GITHUB_WORKSPACE/report.json
-        ls -la $GITHUB_WORKSPACE/*.json      
+        
+        echo "СОДЕРЖИМОЕ REPORT.JSON:"
+        cat ./report.json || echo "Файл не найден или пуст"     
 
     - name: Process Autograding Data
       if: always()
