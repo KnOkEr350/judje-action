@@ -36,6 +36,7 @@ runs:
       shell: bash
       run: |
         docker compose --project-directory $GITHUB_WORKSPACE -f ${{ github.action_path }}/docker-compose.yml cp judge:/app/results.json $GITHUB_WORKSPACE/results.json
+        docker compose --project-directory $GITHUB_WORKSPACE -f ${{ github.action_path }}/docker-compose.yml cp judge:/report.json $GITHUB_WORKSPACE/report.json
         
 
     - name: Process Autograding Data
